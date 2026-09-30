@@ -9,23 +9,13 @@ use Nesk\Puphpeteer\Resources\Page;
 
 class KineticLabsScraper extends Scraper
 {
-    /**
-     * @var array<mixed>
-     */
-    protected array $switches;
-
-    /**
-     * @var array<mixed>
-     */
-    protected array $zeroSpecsSwitches;
-
     public function launch(?Closure $method = null): static
     {
         return parent::launch(function (Page $page) use ($method) {
             $page->goto('https://kineticlabs.com/switches');
             $page->waitForSelector('a[href^="/switches/"]');
 
-            $this->switches = $page->evaluate($this->makeFunction(<<<'JS'
+            $this->rawRecords = $page->evaluate($this->makeFunction(<<<'JS'
                 const p = document.evaluate(
                     "//p[text() = 'Manufacturer']",
                     document,
@@ -57,24 +47,25 @@ class KineticLabsScraper extends Scraper
     public function recordListing(int $count = 5): static
     {
         $switches = Arr::random($this->switches, $count);
-        $this->zeroSpecsSwitches = [];
+        $this->unscrapedModels = [];
         foreach ($switches as $switch) {
             $raw = RawKeySwitch::firstOrNew(['url' => data_get($switch, 'url')]);
             $raw->forceFill($switch);
 
             if ($raw->isDirty() || ! $raw->exists) {
                 $raw->scraped_at = now();
+                $raw->scraper_id = $this->id;
                 $raw->save();
-                $this->zeroSpecsSwitches[] = $switch;
+                $this->unscrapedModels[] = $raw;
             }
         }
 
         return $this;
     }
 
-    public function recordSpecs(): static
+    public function recordDetails(): static
     {
-        foreach ($this->zeroSpecsSwitches as $switch) {
+        foreach ($this->unscrapedModels as $switch) {
             dump($switch);
         }
 

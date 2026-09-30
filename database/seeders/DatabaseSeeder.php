@@ -28,9 +28,9 @@ class DatabaseSeeder extends Seeder
             'class' => KineticLabsScraper::class,
         ]);
 
-        (new KineticLabsScraper)
+        KineticLabsScraper::make()
             ->launch()
-            ->recordListing()
-            ->recordSpecs();
+            ->recordListing(count: 5)
+            ->recordDetails();
     }
 }

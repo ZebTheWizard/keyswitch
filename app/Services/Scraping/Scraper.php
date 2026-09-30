@@ -3,10 +3,11 @@
 namespace App\Services\Scraping;
 
 use Closure;
+use Illuminate\Support\Collection;
 use Nesk\Puphpeteer\Puppeteer;
 use Nesk\Rialto\Data\JsFunction;
 
-class Scraper
+abstract class Scraper
 {
     /**
      * @var array<mixed>
@@ -14,6 +15,16 @@ class Scraper
     private array $options = [];
 
     protected int $id;
+
+    /**
+     * @var array<mixed>
+     */
+    protected array $rawRecords;
+
+    /**
+     * @var array<mixed>
+     */
+    protected array $unscrapedModels;
 
     final public function __construct() {}
 
@@ -32,6 +43,16 @@ class Scraper
     public function options(array $options): self
     {
         $this->options = $options;
+
+        return $this;
+    }
+
+    /**
+     * @param  Collection<Model>|array<Model>  $models
+     */
+    public function hydrate(Collection|array $models): static
+    {
+        $this->unscrapedModels = is_array($models) ? $models : $models->toArray();
 
         return $this;
     }
@@ -70,4 +91,8 @@ class Scraper
     {
         return new static(...$args);
     }
+
+    abstract public function recordListing(int $count = 5): static;
+
+    abstract public function recordDetails(): static;
 }
