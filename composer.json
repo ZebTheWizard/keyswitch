@@ -51,7 +51,7 @@
             "@php artisan migrate --force",
             "npm install",
             "npm run build",
-            "npmx puppeteer browsers install chrome"
+            "npx puppeteer browsers install chrome"
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
