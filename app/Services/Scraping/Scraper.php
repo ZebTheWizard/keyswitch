@@ -4,6 +4,7 @@ namespace App\Services\Scraping;
 
 use Closure;
 use Nesk\Puphpeteer\Puppeteer;
+use Nesk\Rialto\Data\JsFunction;
 
 class Scraper
 {
@@ -11,6 +12,8 @@ class Scraper
      * @var array<mixed>
      */
     private array $options = [];
+
+    protected int $id;
 
     final public function __construct() {}
 
@@ -33,8 +36,19 @@ class Scraper
         return $this;
     }
 
+    protected function makeFunction(string $js): JsFunction
+    {
+        // @phpstan-ignore method.staticCall
+        return JsFunction::createWithBody($js);
+    }
+
     protected function launch(?Closure $method = null): static
     {
+        $scraper = \App\Models\Scraper::firstWhere(['class' => static::class]);
+        throw_if(! $scraper, 'Could not find scraper registered in database.');
+
+        $this->id = $scraper->id;
+
         $url = 'https://google.com';
         $puppeteer = new Puppeteer;
         $browser = $puppeteer->launch($this->options);

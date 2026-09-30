@@ -6,7 +6,6 @@ use App\Models\RawKeySwitch;
 use Closure;
 use Illuminate\Support\Arr;
 use Nesk\Puphpeteer\Resources\Page;
-use Nesk\Rialto\Data\JsFunction;
 
 class KineticLabsScraper extends Scraper
 {
@@ -26,7 +25,7 @@ class KineticLabsScraper extends Scraper
             $page->goto('https://kineticlabs.com/switches');
             $page->waitForSelector('a[href^="/switches/"]');
 
-            $this->switches = $page->evaluate((new JsFunction)->createWithBody(<<<'JS'
+            $this->switches = $page->evaluate($this->makeFunction(<<<'JS'
                 const p = document.evaluate(
                     "//p[text() = 'Manufacturer']",
                     document,

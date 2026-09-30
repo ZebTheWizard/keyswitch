@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('raw_key_switches', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('scraper_id')
+                ->nullable()
+                ->constrained('scrapers')
+                ->nullOnDelete();
             $table->string('url')->unique();
             $table->string('raw_name');
             $table->string('raw_price');

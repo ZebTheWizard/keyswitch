@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Scraper;
 use App\Models\User;
 use App\Services\Scraping\KineticLabsScraper;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -21,6 +22,10 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+        ]);
+
+        Scraper::create([
+            'class' => KineticLabsScraper::class,
         ]);
 
         (new KineticLabsScraper)
