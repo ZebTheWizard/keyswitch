@@ -1,5 +1,5 @@
 {
-  "lockfileVersion": 2,
+  "lockfileVersion": 1,
   "configVersion": 1,
   "workspaces": {
     "": {
@@ -483,9 +483,9 @@
 
     "@yuku-toolchain/types": ["@yuku-toolchain/types@0.5.43", "", {}, "sha512-kSpvPntnXw5+lYjO71ffBEnQ5ycQ74KGIYknh0TS4xeyCuBkOqxyJumxZkMhLBBUCLjDAbx2+Icnr3Zh4ftjpQ=="],
 
-    "@zoon/puphpeteer": ["@zoon/puphpeteer@github:zoonru/puphpeteer#1c35dc9", { "dependencies": { "@zoon/rialto": "git+https://git@github.com/zoonru/rialto.git#zoon", "puppeteer": "24.36.1", "puppeteer-extra": "^3.3.6", "puppeteer-extra-plugin-stealth": "^2.11.2" } }, "zoonru-puphpeteer-1c35dc9", "sha512-/Lw9CcStNCk8R9+bPwoEk5o/wmbIbLgGF7xznhcyOwMc2tzHzTEZPJ83vzaXeqXtSLgerOcOEIOe2FHiJQjDZw=="],
+    "@zoon/puphpeteer": ["@zoon/puphpeteer@github:zoonru/puphpeteer#1c35dc9", { "dependencies": { "@zoon/rialto": "git+https://git@github.com/zoonru/rialto.git#zoon", "puppeteer": "24.36.1", "puppeteer-extra": "^3.3.6", "puppeteer-extra-plugin-stealth": "^2.11.2" } }, "zoonru-puphpeteer-1c35dc9"],
 
-    "@zoon/rialto": ["@zoon/rialto@github:zoonru/rialto#4aac724", { "dependencies": { "lodash": "^4.17.10" } }, "zoonru-rialto-4aac724", "sha512-NGS5Ppkq8bIUUZmD/VcBUgzoC5X2z5OrQJ6vm79nZ4rY4RZDSsDbJFktp2FjbUfXroJtb4VbDefUdH2uIoZiDQ=="],
+    "@zoon/rialto": ["@zoon/rialto@github:zoonru/rialto#4aac724", { "dependencies": { "lodash": "^4.17.10" } }, "zoonru-rialto-4aac724"],
 
     "agent-base": ["agent-base@7.1.4", "", {}, "sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ=="],
 
@@ -1037,8 +1037,6 @@
 
     "@testing-library/dom/@babel/code-frame": ["@babel/code-frame@7.29.7", "", { "dependencies": { "@babel/helper-validator-identifier": "^7.29.7", "js-tokens": "^4.0.0", "picocolors": "^1.1.1" } }, "sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw=="],
 
-    "@types/yauzl/@types/node": ["@types/node@26.6.3", "", { "dependencies": { "undici-types": "~8.9.0" } }, "sha512-dsqMQQoeTLqu9wynDD00q573mNzso3IdQOAfHRJqLCcmCFPoGo9A1bDpUcv/9tnKpErQWv9uKeGfl37EIS02Yg=="],
-
     "@zoon/puphpeteer/@zoon/rialto": ["@zoon/rialto@git+https://git@github.com/zoonru/rialto.git#4aac724b2c319155fcd330b7fab664df0c963969", { "dependencies": { "lodash": "^4.17.10" } }, "4aac724b2c319155fcd330b7fab664df0c963969"],
 
     "cliui/string-width": ["string-width@7.2.0", "", { "dependencies": { "emoji-regex": "^10.3.0", "get-east-asian-width": "^1.0.0", "strip-ansi": "^7.1.0" } }, "sha512-tsaTIkKW9b4N+AEj+SVA+WhJzV7/zMhcSu78mLKWSk7cXMOSHsBKFWUs0fWwq8QyK3MgJBQRX6Gbi4kYbdvGkQ=="],
@@ -1126,8 +1124,6 @@
     "@tailwindcss/node/lightningcss/lightningcss-win32-x64-msvc": ["lightningcss-win32-x64-msvc@1.32.0", "", { "os": "win32", "cpu": "x64" }, "sha512-Amq9B/SoZYdDi1kFrojnoqPLxYhQ4Wo5XiL8EVJrVsB8ARoC1PWW6VGtT0WKCemjy8aC+louJnjS7U18x3b06Q=="],
 
     "@testing-library/dom/@babel/code-frame/js-tokens": ["js-tokens@4.0.0", "", {}, "sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ=="],
-
-    "@types/yauzl/@types/node/undici-types": ["undici-types@8.9.0", "", {}, "sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg=="],
 
     "cliui/wrap-ansi/ansi-styles": ["ansi-styles@6.2.3", "", {}, "sha512-4Dj6M28JB+oAH8kFkTLUo+a2jwOFkuqb3yucU0CANcRRUbxS0cP0nZYCGjcc3BNXwRIsUVmDGgzawme7zvJHvg=="],
 
