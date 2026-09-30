@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
-        (new KineticLabsScraper())
+        (new KineticLabsScraper)
             ->launch()
             ->recordListing()
             ->recordSpecs();
