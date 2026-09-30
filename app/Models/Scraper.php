@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Scraper extends Model
 {
+    /**
+     * @return HasMany<RawKeySwitch, $this>
+     */
     public function switches(): HasMany
     {
         return $this->hasMany(RawKeySwitch::class);

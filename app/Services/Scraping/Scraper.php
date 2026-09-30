@@ -3,6 +3,7 @@
 namespace App\Services\Scraping;
 
 use Closure;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Nesk\Puphpeteer\Puppeteer;
 use Nesk\Rialto\Data\JsFunction;
@@ -14,6 +15,9 @@ abstract class Scraper
      */
     private array $options = [];
 
+    /**
+     * @var int<0, max>
+     */
     protected int $id;
 
     /**
@@ -48,7 +52,7 @@ abstract class Scraper
     }
 
     /**
-     * @param  Collection<Model>|array<Model>  $models
+     * @param  Collection<int, Model>|array<Model>  $models
      */
     public function hydrate(Collection|array $models): static
     {

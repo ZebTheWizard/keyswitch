@@ -2,11 +2,12 @@
 
 namespace App\Filament\Actions;
 
-use App\Models\RawKeySwitch;
+use App\Models\Scraper;
 use Filament\Actions\BulkAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 class ScrapeBulkAction extends BulkAction
 {
@@ -26,6 +27,7 @@ class ScrapeBulkAction extends BulkAction
             ->modalDescription('Are you sure you want to scrape details for the selected records?');
 
         $this->action(function (Collection $records, RelationManager $livewire) {
+            /** @var Scraper */
             $parentModel = $livewire->getOwnerRecord();
             $this->scraper = $parentModel->class;
             $this->execute($records);
@@ -33,7 +35,7 @@ class ScrapeBulkAction extends BulkAction
     }
 
     /**
-     * @param  Collection<RawKeySwitch>  $records
+     * @param  Collection<int, Model>  $records
      */
     public function execute(Collection $records): void
     {

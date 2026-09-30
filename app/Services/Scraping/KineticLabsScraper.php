@@ -46,7 +46,7 @@ class KineticLabsScraper extends Scraper
 
     public function recordListing(int $count = 5): static
     {
-        $switches = Arr::random($this->switches, $count);
+        $switches = Arr::random($this->rawRecords, $count);
         $this->unscrapedModels = [];
         foreach ($switches as $switch) {
             $raw = RawKeySwitch::firstOrNew(['url' => data_get($switch, 'url')]);
