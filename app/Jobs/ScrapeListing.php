@@ -54,5 +54,13 @@ class ScrapeListing implements ShouldQueue
             'status' => ScrapingStatus::FAILED,
             'error' => implode("\n", [$exception->getMessage(), $exception->getTraceAsString()]),
         ]);
+
+        if (isset($this->user)) {
+            Notification::make()
+                ->title('Scraping Failed')
+                ->body("{$this->scraper->class} has failed.")
+                ->danger()
+                ->sendToDatabase($this->user);
+        }
     }
 }
