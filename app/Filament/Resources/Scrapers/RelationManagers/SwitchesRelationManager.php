@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Scrapers\RelationManagers;
 
+use App\Enum\ScrapingStatus;
 use App\Filament\Actions\ScrapeDetailsBulkAction;
+use App\Models\Scraper;
 use Filament\Actions\BulkActionGroup;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Textarea;
@@ -15,6 +17,19 @@ use Filament\Tables\Table;
 class SwitchesRelationManager extends RelationManager
 {
     protected static string $relationship = 'switches';
+
+    protected function isTablePollingEnabled(): bool
+    {
+        /** @var Scraper */
+        $model = $this->getOwnerRecord();
+
+        return $model->status === ScrapingStatus::PENDING;
+    }
+
+    protected function getTablePollingInterval(): ?string
+    {
+        return config('app.poll_rate');
+    }
 
     public function form(Schema $schema): Schema
     {
@@ -41,6 +56,7 @@ class SwitchesRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('url')
+            ->deselectAllRecordsWhenFiltered(false)
             ->columns([
                 TextColumn::make('url')
                     ->searchable(),

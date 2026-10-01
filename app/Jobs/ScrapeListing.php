@@ -31,7 +31,6 @@ class ScrapeListing implements ShouldQueue
             $this->failed($err);
             throw $err;
         }
-
     }
 
     /**
@@ -39,6 +38,10 @@ class ScrapeListing implements ShouldQueue
      */
     public function handle(): void
     {
+        $this->scraper->make()
+            ->scrapeListing()
+            ->recordListing();
+
         $this->scraper->update(['status' => ScrapingStatus::READY, 'error' => null]);
 
         Notification::make()

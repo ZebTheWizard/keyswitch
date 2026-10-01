@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enum\ScrapingStatus;
+use App\Services\Scraping\Scraper as ServiceScraper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -17,6 +18,11 @@ class Scraper extends Model
     protected $casts = [
         'status' => ScrapingStatus::class,
     ];
+
+    public function make(): ServiceScraper
+    {
+        return $this->class::make();
+    }
 
     /**
      * @return HasMany<RawKeySwitch, $this>
