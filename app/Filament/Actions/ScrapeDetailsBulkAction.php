@@ -9,7 +9,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-class ScrapeBulkAction extends BulkAction
+class ScrapeDetailsBulkAction extends BulkAction
 {
     protected string $scraper;
 
@@ -44,7 +44,7 @@ class ScrapeBulkAction extends BulkAction
             ->recordDetails();
 
         Notification::make()
-            ->title('Export Completed')
+            ->title('Scrape Completed')
             ->success()
             ->send();
     }

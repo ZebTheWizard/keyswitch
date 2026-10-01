@@ -13,6 +13,8 @@ class ScraperForm
             ->components([
                 TextInput::make('class')
                     ->required(),
+                TextInput::make('status')
+                    ->readOnly(),
             ]);
     }
 }

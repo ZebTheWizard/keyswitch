@@ -96,7 +96,11 @@ abstract class Scraper
         return new static(...$args);
     }
 
-    abstract public function recordListing(int $count = 5): static;
+    abstract public function scrapeListing(): static;
+
+    abstract public function recordListing(?int $count = null): static;
+
+    abstract public function scrapeDetails(): static;
 
     abstract public function recordDetails(): static;
 }

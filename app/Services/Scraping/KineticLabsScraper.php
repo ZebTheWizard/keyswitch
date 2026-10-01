@@ -3,15 +3,14 @@
 namespace App\Services\Scraping;
 
 use App\Models\RawKeySwitch;
-use Closure;
 use Illuminate\Support\Arr;
 use Nesk\Puphpeteer\Resources\Page;
 
 class KineticLabsScraper extends Scraper
 {
-    public function launch(?Closure $method = null): static
+    public function scrapeListing(): static
     {
-        return parent::launch(function (Page $page) use ($method) {
+        return parent::launch(function (Page $page) {
             $page->goto('https://kineticlabs.com/switches');
             $page->waitForSelector('a[href^="/switches/"]');
 
@@ -39,14 +38,12 @@ class KineticLabsScraper extends Scraper
                     return switches
                 }).flat()
             JS));
-
-            $this->invoke($method, $page);
         });
     }
 
-    public function recordListing(int $count = 5): static
+    public function recordListing(?int $count = null): static
     {
-        $switches = Arr::random($this->rawRecords, $count);
+        $switches = $count ? Arr::random($this->rawRecords, $count) : $this->rawRecords;
         $this->unscrapedModels = [];
         foreach ($switches as $switch) {
             $raw = RawKeySwitch::firstOrNew(['url' => data_get($switch, 'url')]);
@@ -61,6 +58,13 @@ class KineticLabsScraper extends Scraper
         }
 
         return $this;
+    }
+
+    public function scrapeDetails(): static
+    {
+        return parent::launch(function (Page $page) {
+            $page->goto('https://kineticlabs.com/switches');
+        });
     }
 
     public function recordDetails(): static

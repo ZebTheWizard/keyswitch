@@ -29,8 +29,9 @@ class DatabaseSeeder extends Seeder
         ]);
 
         KineticLabsScraper::make()
-            ->launch()
+            ->scrapeListing()
             ->recordListing(count: config('app.scrape_count'))
+            ->scrapeDetails()
             ->recordDetails();
     }
 }

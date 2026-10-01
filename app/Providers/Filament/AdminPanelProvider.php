@@ -54,6 +54,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->viteTheme('resources/css/filament.css')
+            ->databaseNotifications()
+            ->databaseNotificationsPolling(config('app.poll_rate'));
     }
 }

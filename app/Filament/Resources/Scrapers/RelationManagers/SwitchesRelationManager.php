@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Scrapers\RelationManagers;
 
-use App\Filament\Actions\ScrapeBulkAction;
+use App\Filament\Actions\ScrapeDetailsBulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Textarea;
@@ -78,7 +78,7 @@ class SwitchesRelationManager extends RelationManager
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    ScrapeBulkAction::make(),
+                    ScrapeDetailsBulkAction::make(),
                     // DissociateBulkAction::make(),
                     // DeleteBulkAction::make(),
                 ]),

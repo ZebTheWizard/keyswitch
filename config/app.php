@@ -16,6 +16,7 @@ return [
     'name' => env('APP_NAME', 'Laravel'),
 
     'scrape_count' => env('SCRAPE_COUNT', 5),
+    'poll_rate' => env('POLL_RATE', '5s'),
 
     /*
     |--------------------------------------------------------------------------
