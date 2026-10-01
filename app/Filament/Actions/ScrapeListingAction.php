@@ -2,6 +2,8 @@
 
 namespace App\Filament\Actions;
 
+use App\Enum\ScrapingStatus;
+use App\Jobs\ScrapeListing;
 use App\Models\Scraper;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
@@ -22,10 +24,10 @@ class ScrapeListingAction extends Action
             ->requiresConfirmation()
             ->modalHeading('Scrape Listing')
             ->modalDescription('Are you sure you want to scrape details for the selected records?')
-            ->icon(fn (?Scraper $record): string => $record?->status === 'pending' ? 'heroicon-o-arrow-path' : 'heroicon-o-arrow-down-tray')
-            ->disabled(fn (Scraper $record) => $record->status == 'pending')
+            ->icon(fn (?Scraper $record): string => $record?->status === ScrapingStatus::PENDING ? 'heroicon-o-arrow-path' : 'heroicon-o-arrow-down-tray')
+            ->disabled(fn (Scraper $record) => $record->status == ScrapingStatus::PENDING)
             ->extraAttributes(function (?Scraper $record): array {
-                if ($record?->status === 'pending') {
+                if ($record?->status === ScrapingStatus::PENDING) {
                     return [
                         'class' => '[&_svg]:animate-spin',
                         'wire:poll.'.config('app.poll_rate') => '$refresh',
@@ -39,21 +41,18 @@ class ScrapeListingAction extends Action
             /** @var Scraper */
             $model = $livewire->getRecord();
             $model->update(['status' => 'pending']);
-            $this->scraper = $model->class;
-            $this->execute();
+
+            ScrapeListing::dispatch(
+                scraperId: $model->id,
+                userId: auth()->user()->id,
+            );
+
+            Notification::make()
+                ->title('Scraping Started')
+                ->body('The process is running in the background.')
+                ->info()
+                ->send();
+
         });
-    }
-
-    public function execute(): void
-    {
-        // $this->scraper::make()
-        //     ->scrapeListing()
-        //     ->recordListing();
-
-        Notification::make()
-            ->title('Scraping Started')
-            ->body('The process is running in the background.')
-            ->info()
-            ->send();
     }
 }

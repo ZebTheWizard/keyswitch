@@ -141,3 +141,7 @@
         @apply bg-background text-foreground;
     }
 }
+
+.fi-size-lg {
+    @apply text-lg;
+}

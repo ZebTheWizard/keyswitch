@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('class')->unique();
             $table->string('status')->default('ready');
+            $table->string('error')->nullable();
             $table->timestamps();
         });
     }
