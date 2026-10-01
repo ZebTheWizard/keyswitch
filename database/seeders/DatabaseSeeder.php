@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
 
         KineticLabsScraper::make()
             ->launch()
-            ->recordListing(count: 5)
+            ->recordListing(count: config('app.scrape_count'))
             ->recordDetails();
     }
 }
