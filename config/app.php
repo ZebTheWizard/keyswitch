@@ -17,6 +17,7 @@ return [
 
     'scrape_count' => env('SCRAPE_COUNT', 5),
     'poll_rate' => env('POLL_RATE', '5s'),
+    'node_path' => env('NODE_PATH', 'node'),
 
     /*
     |--------------------------------------------------------------------------

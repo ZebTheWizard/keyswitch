@@ -2,9 +2,10 @@
 
 namespace App\Services\Scraping;
 
+use App\Enum\RawDataStatus;
 use Closure;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
+use Illuminate\Validation\Validator;
 use Nesk\Puphpeteer\Puppeteer;
 use Nesk\Rialto\Data\JsFunction;
 
@@ -28,7 +29,12 @@ abstract class Scraper
     /**
      * @var array<mixed>
      */
-    protected array $unscrapedModels;
+    protected array $details;
+
+    /**
+     * @var array<mixed>
+     */
+    public array $jsonStack = [];
 
     final public function __construct() {}
 
@@ -51,20 +57,26 @@ abstract class Scraper
         return $this;
     }
 
-    /**
-     * @param  Collection<int, Model>|array<Model>  $models
-     */
-    public function hydrate(Collection|array $models): static
-    {
-        $this->unscrapedModels = is_array($models) ? $models : $models->toArray();
-
-        return $this;
-    }
-
     protected function makeFunction(string $js): JsFunction
     {
         // @phpstan-ignore method.staticCall
         return JsFunction::createWithBody($js);
+    }
+
+    protected function validateModel(Model $model, Validator $validator): void
+    {
+        if ($validator->fails()) {
+            $errorMessages = implode("\n• ", $validator->errors()->all());
+            $model->forceFill([
+                'status' => RawDataStatus::NEEDS_REVIEW,
+                'review_reason' => "Validation failed\n• {$errorMessages}",
+            ]);
+        } else {
+            $model->forceFill([
+                'status' => RawDataStatus::READY,
+                'review_reason' => null,
+            ]);
+        }
     }
 
     protected function launch(?Closure $method = null): static
@@ -74,8 +86,11 @@ abstract class Scraper
 
         $this->id = $scraper->id;
 
-        $url = 'https://google.com';
-        $puppeteer = new Puppeteer;
+        $puppeteer = new Puppeteer([
+            'executable_path' => config('app.node_path'),
+            'log_node_console' => true,
+            'logger' => new RialtoInterceptLogger($this),
+        ]);
         $browser = $puppeteer->launch($this->options);
         $page = $browser->newPage();
 
@@ -100,7 +115,7 @@ abstract class Scraper
 
     abstract public function recordListing(?int $count = null): static;
 
-    abstract public function scrapeDetails(): static;
+    abstract public function scrapeDetails(string $url): static;
 
     abstract public function recordDetails(): static;
 }

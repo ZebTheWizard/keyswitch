@@ -11,8 +11,10 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\HtmlString;
 
 class SwitchesRelationManager extends RelationManager
 {
@@ -58,15 +60,21 @@ class SwitchesRelationManager extends RelationManager
             ->recordTitleAttribute('url')
             ->deselectAllRecordsWhenFiltered(false)
             ->columns([
+                ImageColumn::make('raw_cover'),
+                TextColumn::make('status')
+                    ->searchable(),
+                TextColumn::make('review_reason')
+                    ->html()
+                    ->formatStateUsing(fn (?string $state) => $state ? new HtmlString(nl2br(e($state))) : null)
+                    ->searchable(),
                 TextColumn::make('url')
                     ->searchable(),
                 TextColumn::make('raw_name')
                     ->searchable(),
                 TextColumn::make('raw_price')
-                    ->searchable(),
+                    ->searchable()
+                    ->money('usd'),
                 TextColumn::make('raw_manufacturer')
-                    ->searchable(),
-                TextColumn::make('raw_cover')
                     ->searchable(),
                 TextColumn::make('scraped_at')
                     ->dateTime()

@@ -39,9 +39,11 @@ class ScrapeDetailsBulkAction extends BulkAction
      */
     public function execute(Collection $records): void
     {
-        $this->scraper::make()
-            ->hydrate($records)
-            ->recordDetails();
+        foreach ($records as $record) {
+            $this->scraper::make()
+                ->scrapeDetails(data_get($record, 'url'))
+                ->recordDetails();
+        }
 
         Notification::make()
             ->title('Scrape Completed')
