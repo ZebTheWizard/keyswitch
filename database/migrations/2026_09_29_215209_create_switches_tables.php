@@ -31,9 +31,9 @@ return new class extends Migration
 
         Schema::create('key_switches', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('raw_switch_id')
+            $table->foreignId('raw_key_switch_id')
                 ->nullable()
-                ->constrained('raw_switches')
+                ->constrained('raw_key_switches')
                 ->nullOnDelete();
             $table->string('name');
             $table->string('price');

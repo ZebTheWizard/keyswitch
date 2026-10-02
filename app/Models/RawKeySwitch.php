@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enum\RawDataStatus;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class RawKeySwitch extends Model
 {
@@ -14,4 +15,12 @@ class RawKeySwitch extends Model
         'raw_data' => 'array',
         'raw_price' => 'float',
     ];
+
+    /**
+     * @return HasOne<KeySwitch, $this>
+     */
+    public function keySwitch(): HasOne
+    {
+        return $this->hasOne(KeySwitch::class);
+    }
 }

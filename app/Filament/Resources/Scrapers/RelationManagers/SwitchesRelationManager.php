@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Scrapers\RelationManagers;
 
 use App\Enum\ScrapingStatus;
+use App\Filament\Actions\EditSwitchFromRawAction;
 use App\Filament\Actions\ScrapeDetailsBulkAction;
 use App\Models\Scraper;
 use Filament\Actions\BulkActionGroup;
@@ -95,7 +96,9 @@ class SwitchesRelationManager extends RelationManager
                 // CreateAction::make(),
                 // AssociateAction::make(),
             ])
+            ->recordAction('editSwitchFromRaw')
             ->recordActions([
+                EditSwitchFromRawAction::make(),
                 // EditAction::make(),
                 // DissociateAction::make(),
                 // DeleteAction::make(),

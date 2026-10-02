@@ -2,8 +2,11 @@
 
 namespace App\Services\Scraping;
 
+use App\Models\KeySwitch;
 use App\Models\RawKeySwitch;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Nesk\Puphpeteer\Resources\Page;
 use Nesk\Rialto\Data\JsFunction;
@@ -174,5 +177,52 @@ class KineticLabsScraper extends Scraper
         ]);
 
         $this->validateModel(model: $raw, validator: $validator);
+    }
+
+    public function createSwitchFromRaw(RawKeySwitch $raw): KeySwitch
+    {
+        $disk = 'public';
+        $switch = $raw->keySwitch()->firstOrNew();
+
+        $cover = $raw->raw_cover;
+
+        if ($raw->raw_cover) {
+            $cover = 'covers/'.uniqid().'.avif';
+            $absolutePath = Storage::disk($disk)->path($cover);
+            Storage::disk($disk)->makeDirectory('covers');
+            Http::sink($absolutePath)->get($raw->raw_cover);
+
+            if ($switch->cover) {
+                Storage::disk($disk)->delete($switch->cover);
+            }
+        }
+
+        $product_images = data_get($raw->raw_data, 'product_images');
+        if (! empty($product_images)) {
+            foreach ($product_images as &$image) {
+                $localImage = 'products/'.uniqid().'.avif';
+                $absolutePath = Storage::disk($disk)->path($localImage);
+                Storage::disk($disk)->makeDirectory('products');
+                Http::sink($absolutePath)->get($image);
+                $image = $localImage;
+            }
+
+            if ($switch->product_images) {
+                foreach ($switch->product_images as $image) {
+                    Storage::disk($disk)->delete($image);
+                }
+            }
+        }
+
+        $switch->forceFill([
+            'name' => $raw->raw_name,
+            'price' => $raw->raw_price,
+            'manufacturer' => $raw->raw_manufacturer,
+            'cover' => $cover,
+            'product_images' => $product_images,
+        ]);
+        $switch->save();
+
+        return $switch;
     }
 }
