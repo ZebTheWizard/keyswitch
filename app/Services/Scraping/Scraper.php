@@ -5,12 +5,16 @@ namespace App\Services\Scraping;
 use App\Enum\RawDataStatus;
 use Closure;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Image;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Validator;
 use Nesk\Puphpeteer\Puppeteer;
 use Nesk\Rialto\Data\JsFunction;
 
 abstract class Scraper
 {
+    protected string $disk = 'public';
+
     /**
      * @var array<mixed>
      */
@@ -24,12 +28,12 @@ abstract class Scraper
     /**
      * @var array<mixed>
      */
-    protected array $rawRecords;
+    protected array $rawRecords = [];
 
     /**
      * @var array<mixed>
      */
-    protected array $details;
+    protected array $details = [];
 
     /**
      * @var array<mixed>
@@ -109,6 +113,21 @@ abstract class Scraper
     public static function make(array ...$args): static
     {
         return new static(...$args);
+    }
+
+    protected function storeImageAsWebp(string $url, string $folder, string $disk): string
+    {
+        $localName = uniqid().'.webp';
+        $localImage = $folder.'/'.$localName;
+
+        Storage::disk($disk)->makeDirectory($folder);
+
+        Image::fromUrl($url)
+            ->toFormat('webp')
+            ->quality(80)
+            ->storeAs($folder, $localName, $disk);
+
+        return $localImage;
     }
 
     abstract public function scrapeListing(): static;

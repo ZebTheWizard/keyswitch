@@ -5,7 +5,6 @@ namespace App\Services\Scraping;
 use App\Models\KeySwitch;
 use App\Models\RawKeySwitch;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Nesk\Puphpeteer\Resources\Page;
@@ -134,6 +133,9 @@ class KineticLabsScraper extends Scraper
 
                 details['product_images'] = Array.from(document.querySelectorAll("button[aria-label*='zoom'] img[fetchpriority='high']")).map(n => n.src)
 
+                const quantityWrapper = xpath("//div[(p or span) and contains(text(), 'Quantity')]")
+                details['units'] = parseInt(quantityWrapper.querySelector('p,span')?.textContent?.replace(/[^0-9.-]+/g, "") ?? 1)
+
                 return details;
             JS));
 
@@ -149,6 +151,7 @@ class KineticLabsScraper extends Scraper
     {
         $raw = RawKeySwitch::firstOrNew(['url' => data_get($this->details, 'url')]);
         data_forget($this->details, 'url');
+        data_set($this->details, 'unit_price', round($raw->raw_price / data_get($this->details, 'units', 1), 2));
         $raw->forceFill([
             'raw_data' => $this->details,
         ]);
@@ -181,16 +184,13 @@ class KineticLabsScraper extends Scraper
 
     public function createSwitchFromRaw(RawKeySwitch $raw): KeySwitch
     {
-        $disk = 'public';
+        $disk = $this->disk;
         $switch = $raw->keySwitch()->firstOrNew();
 
         $cover = $raw->raw_cover;
 
         if ($raw->raw_cover) {
-            $cover = 'covers/'.uniqid().'.avif';
-            $absolutePath = Storage::disk($disk)->path($cover);
-            Storage::disk($disk)->makeDirectory('covers');
-            Http::sink($absolutePath)->get($raw->raw_cover);
+            $cover = $this->storeImageAsWebp($raw->raw_cover, 'covers', $disk);
 
             if ($switch->cover) {
                 Storage::disk($disk)->delete($switch->cover);
@@ -200,11 +200,7 @@ class KineticLabsScraper extends Scraper
         $product_images = data_get($raw->raw_data, 'product_images');
         if (! empty($product_images)) {
             foreach ($product_images as &$image) {
-                $localImage = 'products/'.uniqid().'.avif';
-                $absolutePath = Storage::disk($disk)->path($localImage);
-                Storage::disk($disk)->makeDirectory('products');
-                Http::sink($absolutePath)->get($image);
-                $image = $localImage;
+                $image = $this->storeImageAsWebp($image, 'products', $disk);
             }
 
             if ($switch->product_images) {
@@ -216,7 +212,7 @@ class KineticLabsScraper extends Scraper
 
         $switch->forceFill([
             'name' => $raw->raw_name,
-            'price' => $raw->raw_price,
+            'price' => data_get($raw->raw_data, 'unit_price', $raw->raw_price),
             'manufacturer' => $raw->raw_manufacturer,
             'cover' => $cover,
             'product_images' => $product_images,
