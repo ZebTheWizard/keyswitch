@@ -15,11 +15,7 @@ class MechanicalKeyboardsScraper extends Scraper
      * @var array<mixed>
      */
     protected array $collections = [
-        'https://mechanicalkeyboards.com/collections/linear-switches',
-        'https://mechanicalkeyboards.com/collections/tactile-switches',
-        'https://mechanicalkeyboards.com/collections/clicky-switches',
-        'https://mechanicalkeyboards.com/collections/he-magnetic-switches',
-        'https://mechanicalkeyboards.com/collections/silent-switches',
+        'https://mechanicalkeyboards.com/collections/keyboard-switches',
     ];
 
     public function scrapeListing(): static
@@ -34,7 +30,10 @@ class MechanicalKeyboardsScraper extends Scraper
                         return Array.from(document.querySelectorAll('.collection-product-card')).map(c => ({
                             url: c.querySelector('a')?.href,
                             raw_name: c.querySelector('.card__title a')?.innerHTML,
-                            raw_price: c.querySelector('.price-item--regular')?.innerHTML?.replace(/[^0-9.-]+/g, ""),
+                            raw_sale_price: parseFloat(c.querySelector('.price-item--regular')?.textContent?.replace(/[^0-9.-]+/g, "") ?? 0),
+                            get raw_price () {
+                               return parseFloat(c.querySelector('.price__compare .price-item--regular')?.textContent?.replace(/[^0-9.-]+/g, "") ?? 0) || this.raw_sale_price
+                            },
                             raw_manufacturer: c.querySelector('.card__vendor')?.innerHTML?.trim(),
                             raw_cover: c.querySelector('.media--first')?.src
                         }));
@@ -62,6 +61,7 @@ class MechanicalKeyboardsScraper extends Scraper
 
         foreach ($switches as $switch) {
             $raw = RawKeySwitch::firstOrNew(['url' => data_get($switch, 'url')]);
+            data_forget($switch, 'raw_sale_price');
             $raw->forceFill($switch);
 
             $this->validateRawKeySwitch($raw);
